@@ -16,6 +16,10 @@
 buildscript {
   repositories {
     mavenCentral()
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6+'
   }
   apply from: file('gradle/buildscript.gradle'), to: buildscript
 }
@@ -24,8 +28,30 @@ def slf4jlog4j='org.slf4j:slf4j-log4j12:1.7.6'
 
 allprojects {
   apply plugin: 'idea'
+  apply plugin: 'com.jfrog.bintray'
   repositories {
     mavenCentral()
+  }
+
+  bintray {
+      user = bintrayUser
+      key = bintrayKey
+      publish = true
+      dryRun = false
+      configurations = ['archives']
+
+      pkg {
+          userOrg = 'lookout'
+          repo = 'systems'
+          name = 'kafka'
+          labels = ['kafka', 'java', 'messaging']
+
+          version {
+              name = project.version
+              vcsTag = "v${project.version}"
+              desc = 'A Lookout specific fork of Kafka 0.8.2'
+          }
+      }
   }
 }
 
